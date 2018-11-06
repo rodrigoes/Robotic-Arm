@@ -88,7 +88,7 @@ public class Cosimir_robo
         
         gl.glLoadIdentity();
         gl.glTranslated(0,0,-10);
-       // gl.glRotated(g2, 0,1, 0);
+        gl.glRotated(g2, 0,1, 0);
         
         
         g2 = g2 + 0.2;
@@ -96,11 +96,7 @@ public class Cosimir_robo
         
            desenhaBase(gl);
         
-        
-        
-        
-        
-        
+
         
         if(g <= 0){
             incG = 0.2;
@@ -179,10 +175,13 @@ public class Cosimir_robo
         
         //braco
         gl.glPushMatrix();
-            gl.glTranslated(0, 0.5, 0);
-            gl.glRotated(90, 0, 1, 0);
-            glut.glutWireCylinder(0.75, 0.5, 10, 10);
-            gl.glScaled(1, 0.5, 2);
+        gl.glTranslated(0.375, 0.75, 0);
+            gl.glPushMatrix();
+                gl.glRotated(90, 0, 1, 0);
+                glut.glutWireCylinder(0.75, 0.5, 10, 10);
+            gl.glPopMatrix();
+            gl.glTranslated(0.25, 1.5, 0);
+            gl.glScaled(0.375, 3, 1.5);
             glut.glutWireCube(1);
         gl.glPopMatrix();
         

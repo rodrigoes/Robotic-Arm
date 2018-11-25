@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cosimir;
+package _aula05.dia22102018;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -40,7 +40,7 @@ public class Cosimir_robo
     {
         new Cosimir_robo();
     }
-    private double g;
+    private double g=-90;
     private double incG;
     private double g2;
     
@@ -88,7 +88,7 @@ public class Cosimir_robo
         
         gl.glLoadIdentity();
         gl.glTranslated(0,0,-10);
-        gl.glRotated(g, 0,1, 0);
+        gl.glRotated(30, 0, 1, 0);
         
         
         g2 = g2 + 0.2;
@@ -98,7 +98,7 @@ public class Cosimir_robo
         
 
         
-        if(g <= 0){
+        if(g <= -90){
             incG = 0.2;
         }
         if(g >= 90){
@@ -138,7 +138,7 @@ public class Cosimir_robo
         
     }
 
-    private void desenhaDedo(GL2 gl) {
+    /*private void desenhaDedo(GL2 gl) {
     gl.glPushMatrix();
         //Dedo 1a
         gl.glTranslated(1,0.5,0);
@@ -158,7 +158,7 @@ public class Cosimir_robo
             glut.glutWireCube(1);
         gl.glPopMatrix();
         gl.glPopMatrix();
-    }
+    }*/
 
     private void desenhaBase(GL2 gl) {
      gl.glPushMatrix();
@@ -173,10 +173,14 @@ public class Cosimir_robo
             glut.glutWireCylinder(1, 0.6, 10, 10);
         gl.glPopMatrix();
         
-        //braco
+        
         gl.glTranslated(0, 0.75, 0);
+        
+        
         gl.glRotated(g, 1, 0, 0);
+        //braco
         gl.glPushMatrix();
+            
             gl.glPushMatrix();
                 gl.glTranslated(0.3, 0, 0);
                 gl.glPushMatrix();
@@ -196,7 +200,7 @@ public class Cosimir_robo
             gl.glPopMatrix();
 
             gl.glPushMatrix();
-            gl.glTranslated(-0.8, 0, 0);
+                gl.glTranslated(-0.8, 0, 0);
                 gl.glPushMatrix();
                     gl.glRotated(90, 0, 1, 0);
                     glut.glutWireCylinder(0.75, 0.5, 10, 10);
@@ -212,27 +216,35 @@ public class Cosimir_robo
                     glut.glutWireCylinder(0.75, 0.5, 10, 10);
                 gl.glPopMatrix();
             gl.glPopMatrix();
+            
+            gl.glPushMatrix();
+                gl.glTranslated(0, 1.5, 0);
+                gl.glScaled(0.6, 2, 1.5);
+                glut.glutWireCube(1);
+             gl.glPopMatrix();
+             
+            //Antebraco
+            
+            gl.glPushMatrix();
+                gl.glTranslated(-0.3,3.375, 0);
+                gl.glRotated(g, 1, 0, 0);
+                gl.glPushMatrix();
+                    gl.glRotated(90, 0, 1, 0);
+                    glut.glutWireCylinder(0.75, 0.6, 10, 10);
+                gl.glPopMatrix();
+                
+                gl.glTranslated(0.3,1, 0);
+                gl.glScaled(1.2, 2, 1.2);
+                glut.glutWireCube(1);
+                
+            gl.glPopMatrix();
+            
         gl.glPopMatrix();
         
-        /*desenhaDedo(gl);
-        gl.glPushMatrix();
-            gl.glTranslated(0,0,0.5-0.125);
-            desenhaDedo(gl);
-        gl.glPopMatrix();
-        gl.glPushMatrix();
-            gl.glTranslated(0,0,-0.5+0.125);
-            desenhaDedo(gl);
-        gl.glPopMatrix();
-        gl.glPushMatrix();
-            gl.glRotated(180, 1, 0, 0);
-            desenhaDedo(gl);
-        gl.glPopMatrix();*/
+        
+        
       gl.glPopMatrix();
     }
-
-    
-
-
 }
 
 

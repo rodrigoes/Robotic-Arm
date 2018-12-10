@@ -1,4 +1,4 @@
-package cosimir;
+package projeto_braco_robotico;
 
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -18,7 +18,8 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
 
     private double g=-90;
     public double incG=1;
-    private double g2;
+    
+    
     private double incJ1;
     private double incJ2;
     private double incJ3;
@@ -32,10 +33,19 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
     private double j5=0.0;
     private double j6=0.0;
     private double v=0.0;
+    
     private double position [][] = new double [100][7];
     private boolean gravar=false;
     private boolean executar=false;
     private int n =0;
+    
+    private int altura;
+    private int largura;
+    
+    private int x=0;
+    private int rX=0;
+    private int rY=0;
+    private int z=-20;
     
     private int a=0;
     private boolean maior1=false;
@@ -51,14 +61,17 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
     private boolean maior6=false;
     private boolean menor6=false;
     
+    private boolean loop=false;
+    
     
     
     public Braco_Robotico() {
         canvas.addGLEventListener(this);
         
         JFrame frame = new JFrame("Braço Robótico");
-        int altura = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-        frame.setSize(altura, altura);
+        altura = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        largura = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        frame.setSize(largura+16, altura);
         frame.setLocation(-8,0);
         frame.addKeyListener(this);
         frame.getContentPane().add(canvas);
@@ -146,13 +159,169 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
                      pos,
                      0);
         
-        gl.glTranslated(-3,-4,-15);
-        gl.glRotated(30,0, 1, 0);
+        
+        
+        
+        gl.glPushMatrix();
+            gl.glTranslated(0, 0, -3);
+            gl.glEnable(GL2.GL_COLOR_MATERIAL);
+            gl.glColor3d(0, 0, 0);
+            gl.glRasterPos2d(0.8, 1.60);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_18,"CONTROL:");
+            gl.glRasterPos2d(0.8, 1.45);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"NUMPAD1 = J1+");
+            gl.glRasterPos2d(0.8, 1.40);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + NUMPAD1 = J1-");
+            gl.glRasterPos2d(0.8, 1.35);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"NUMPAD2 = J2+");
+            gl.glRasterPos2d(0.8, 1.30);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + NUMPAD2 = J2-");
+            gl.glRasterPos2d(0.8, 1.25);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"NUMPAD3 = J3+");
+            gl.glRasterPos2d(0.8, 1.20);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + NUMPAD3 = J3-");
+            gl.glRasterPos2d(0.8, 1.15);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"NUMPAD4 = J4+");
+            gl.glRasterPos2d(0.8, 1.10);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + NUMPAD4 = J4-");
+            gl.glRasterPos2d(0.8, 1.05);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"NUMPAD5 = J5+");
+            gl.glRasterPos2d(0.8, 1.00);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + NUMPAD5 = J5-");
+            gl.glRasterPos2d(0.8, 0.95);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"NUMPAD6 = J6+");
+            gl.glRasterPos2d(0.8, 0.90);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + NUMPAD6 = J6-");
+            
+            gl.glRasterPos2d(1.10, 1.45);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"+ = velocidade ++");
+            gl.glRasterPos2d(1.10, 1.40);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"- = velocidade --");
+            gl.glRasterPos2d(1.10, 1.35);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"UP = Zoom ++");
+            gl.glRasterPos2d(1.10, 1.30);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"DOWN = Zoom --");
+            gl.glRasterPos2d(1.10, 1.25);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + UP = Rotated in + X");
+            gl.glRasterPos2d(1.10, 1.20);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + DOWN = Rotated in - X");
+            gl.glRasterPos2d(1.10, 1.15);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"LEFT = Translated in - X");
+            gl.glRasterPos2d(1.10, 1.10);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"RIGTH = Translated in + X");
+            gl.glRasterPos2d(1.10, 1.05);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + LEFT = Rotated in - Y");
+            gl.glRasterPos2d(1.10, 1.00);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ALT + RIGTH = Rotated in + Y");
+            gl.glRasterPos2d(1.10, 0.95);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"SPACE = Record Point");
+            gl.glRasterPos2d(1.10, 0.90);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"ENTER = Execute");
+            
+            gl.glRasterPos2d(0.80, 0.85);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"R = Reset Position");
+            
+            gl.glRasterPos2d(1.10, 0.85);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"L = loop");
+            
+            gl.glRasterPos2d(0.8, 0.75);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_18,"DADOS:");
+            
+            gl.glRasterPos2d(0.8, 0.65);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_18,"VELOCIDADE: "+v);
+            
+            gl.glRasterPos2d(0.8, 0.55);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_18,"POSIÇÕES GRAVADAS: "+n);
+            
+            gl.glRasterPos2d(0.8, 0.42);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_18,"POSIÇÃO ATUAL: ");
+            
+            gl.glRasterPos2d(0.8, 0.35);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"J1: "+j1);
+            
+            gl.glRasterPos2d(0.8, 0.30);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"J2: "+j2);
+            
+            gl.glRasterPos2d(0.8, 0.25);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"J3: "+j3);
+            
+            gl.glRasterPos2d(0.8, 0.20);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"J4: "+j4);
+            
+            gl.glRasterPos2d(0.8, 0.15);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"J5: "+j5);
+            
+            gl.glRasterPos2d(0.8, 0.10);
+            glut.glutBitmapString(glut.BITMAP_HELVETICA_12,"J6: "+j6);
+            
+            
+            gl.glDisable(GL2.GL_COLOR_MATERIAL);
+        gl.glPopMatrix();
+        
+        float matDifusa1[]  ={0.5f,0.5f,0.5f,1.0f};
+        float materialAmbiente1[] ={0.8f,0.8f,0.8f,1.0f};
+        float materialEspecular1[] ={0.9f,0.9f,0.9f,1.0f};
+        float brilho1 = 80;
+        
+        gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_DIFFUSE,
+                        matDifusa1,
+                        0);
+       
+        gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_AMBIENT,
+                        materialAmbiente1,
+                        0);
+        
+        gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_SPECULAR,
+                        materialEspecular1,
+                        0);
+        
+        gl.glMaterialf(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_SHININESS,
+                        brilho1
+                        );
+        
+        gl.glPushMatrix();
+            gl.glTranslated(0, -6.6, 0);
+            gl.glScaled((double)altura/(largura+16), 1, 1);
+            gl.glBegin(GL2.GL_QUADS);
+                
+                int l=60;
+                gl.glVertex3d(-(l/3), 0,0);
+                gl.glVertex3d((l/3), 0,0);
+                gl.glVertex3d((l/3), 0,-l);
+                gl.glVertex3d(-(l/3), 0,-l);
+                
+                gl.glVertex3d(-(l/3), 0,-l);
+                gl.glVertex3d(-(l/3), l/3,-l);
+                gl.glVertex3d((l/3), l/3,-l);
+                gl.glVertex3d((l/3), -(l/3),-l);
+                
+                gl.glVertex3d((l/3), -(l/3),-l);
+                gl.glVertex3d((l/3), -(l/3),0);
+                gl.glVertex3d((l/3), (l/3),0);
+                gl.glVertex3d((l/3), (l/3),-l);
+                
+                gl.glVertex3d((l/3), (l/3),-l);
+                gl.glVertex3d((l/3), (l/3),0);
+                gl.glVertex3d(-(l/3), (l/3),0);
+                gl.glVertex3d(-(l/3), (l/3),-l);
+                
+                gl.glVertex3d(-(l/3), (l/3),-l);
+                gl.glVertex3d(-(l/3), -(l/3),-l);
+                gl.glVertex3d(-(l/3), -(l/3),0);
+                gl.glVertex3d(-(l/3),(l/3),0);
+                
+            gl.glEnd();
+        gl.glPopMatrix();
+        
         
         //gl.glRotated(r, 0, 1, 0);
         //r = r + 0.05;
 
-        float matDifusa[]  ={0.9f,0,0,1.0f};
+        float matDifusa[]  ={0.7f,0.3f,0,1.0f};
         float materialAmbiente[] ={0.25f,0,0,1};
         float materialEspecular[] ={1,1,1,1};
         float brilho = 40;
@@ -183,6 +352,7 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
   
         if(gravar)
         {
+            
             if(v>0)
             {
                 gravarPosicao(j1,j2,j3,j4,j5,j6,v,n);
@@ -192,14 +362,21 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
             gravar=false;
         }
         
-        if(executar)
+        if(executar||loop)
         {
             executarMovimento();  
-        }
+        }      
+            
         
         
         
         gl.glPushMatrix();
+            
+            gl.glTranslated(x,-4,z);
+            gl.glRotated(rX,1, 0, 0);            
+            gl.glScaled((double)altura/(largura+16), 1, 1);
+            gl.glRotated(rY,0, 1, 0);
+            
             desenharBase(gl,j1);
             desenharBraco(gl,j2);
             desenharAnteBraco(gl,j3,j4);
@@ -287,8 +464,70 @@ public class Braco_Robotico implements GLEventListener, KeyListener {
         if(key.getKeyCode()== KeyEvent.VK_SPACE)
             gravar=true;        
         if(key.getKeyCode()== KeyEvent.VK_ENTER)
-            executar=true;      
+            executar=true;  
         
+        if(key.getKeyCode()== KeyEvent.VK_LEFT)
+        {
+            if(key.isAltDown())
+            {
+                if(rY>-180)
+                    rY--;
+            }
+            else
+                if(x>-(15*altura/(largura+16)))
+                    x--;
+        } 
+        
+        if(key.getKeyCode()== KeyEvent.VK_RIGHT)
+        {
+            if(key.isAltDown())
+            {
+                if(rY<180)
+                    rY++;
+            }
+            else
+                if(x<(15*altura/(largura+16)))
+                x++;
+        } 
+        
+        if(key.getKeyCode()== KeyEvent.VK_UP)
+        {
+            if(key.isAltDown())
+            {
+                if(rX<90)
+                    rX++;
+            }
+            else
+            {
+                if (z<-10)
+                    z++;
+            }
+        }
+        
+        if(key.getKeyCode()== KeyEvent.VK_DOWN)
+        {
+            if(key.isAltDown())
+            {
+                if(rX>-90)
+                    rX--;
+            }
+            else
+            {
+                if(z>-40)
+                z--;
+            }
+        } 
+        
+        if(key.getKeyCode()== KeyEvent.VK_R)
+        {
+            x=0;
+            rX=0;
+            rY=0;
+            z=-20;
+        }
+        
+        if(key.getKeyCode()== KeyEvent.VK_L)
+            loop=!loop;
     }
     
     @Override

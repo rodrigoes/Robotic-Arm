@@ -4,12 +4,13 @@ import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.text.DecimalFormat;
 import javax.swing.*;
 import javax.media.opengl.*;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 
-public class projeto implements GLEventListener, KeyListener {
+public class Braco_Robotico implements GLEventListener, KeyListener {
 
     private GLUT glut;
     GLJPanel canvas = new GLJPanel();
@@ -24,27 +25,45 @@ public class projeto implements GLEventListener, KeyListener {
     private double incJ4;
     private double incJ5;
     private double incJ6;
-    private double j1=0;
-    private double j2;
-    private double j3;
-    private double j4;
-    private double j5;
-    private double j6;
-    private double v=0;
+    private double j1=0.0;
+    private double j2=0.0;
+    private double j3=0.0;
+    private double j4=0.0;
+    private double j5=0.0;
+    private double j6=0.0;
+    private double v=0.0;
+    private double position [][] = new double [100][7];
+    private boolean gravar=false;
+    private boolean executar=false;
+    private int n =0;
+    
+    private int a=0;
+    private boolean maior1=false;
+    private boolean menor1=false;
+    private boolean maior2=false;
+    private boolean menor2=false;
+    private boolean maior3=false;
+    private boolean menor3=false;
+    private boolean maior4=false;
+    private boolean menor4=false;
+    private boolean maior5=false;
+    private boolean menor5=false;
+    private boolean maior6=false;
+    private boolean menor6=false;
     
     
     
-    
-    public projeto() {
+    public Braco_Robotico() {
         canvas.addGLEventListener(this);
         
-        JFrame frame = new JFrame("Exemplo01");
+        JFrame frame = new JFrame("Braço Robótico");
         int altura = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         frame.setSize(altura, altura);
         frame.setLocation(-8,0);
-         frame.addKeyListener(this);
+        frame.addKeyListener(this);
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
+
         
 
         frame.addWindowListener(new WindowAdapter() {
@@ -60,7 +79,7 @@ public class projeto implements GLEventListener, KeyListener {
     }
 
     public static void main(String[] args) {
-        new projeto();
+        new Braco_Robotico();
     }
 
     /*
@@ -157,38 +176,30 @@ public class projeto implements GLEventListener, KeyListener {
                         GL2.GL_SHININESS,
                         brilho
                         );
-
-        if(j1 >= -90 && j1<=90)
-            j1+=incJ1;
-      
         
-         if(j2 >= -90)
-            j2+=incJ2;
-        if(j2 <= 90)
-            j2+=incJ2;
+        if(!executar)
+            movimentacao();
         
-        if(j3 >= -90)
-            j3+=incJ3;
-        if(j3 <= 90)
-            j3+=incJ3;
+  
+        if(gravar)
+        {
+            if(v>0)
+            {
+                gravarPosicao(j1,j2,j3,j4,j5,j6,v,n);
+                System.out.println("J1= "+j1+" J2= "+j2+" J3= "+j3+" J4= "+j4+" J5= "+j5+" J6= "+j6+" v= "+v);
+                n++;
+            }
+            gravar=false;
+        }
         
-        if(j4 >= -90)
-            j4+=incJ4;
-        if(j4 <= 90)
-            j4+=incJ4;
+        if(executar)
+        {
+            executarMovimento();  
+        }
         
-        if(j5 >= -90)
-            j5+=incJ5;
-        if(j1 <= 90)
-            j5+=incJ5;
         
-        if(j6 >= -90)
-            j6+=incJ6;
-        if(j6 <= 90)
-            j6+=incJ6;
-
         
-         gl.glPushMatrix();
+        gl.glPushMatrix();
             desenharBase(gl,j1);
             desenharBraco(gl,j2);
             desenharAnteBraco(gl,j3,j4);
@@ -221,77 +232,72 @@ public class projeto implements GLEventListener, KeyListener {
     public void keyPressed(KeyEvent key) {
 
 
-        if(key.getKeyCode()== KeyEvent.VK_PLUS)
+        if(key.getKeyCode()== KeyEvent.VK_ADD)
         {
-            if(v<2)
+            if(v<4)
                 v+=0.1;
-        }
-            
-        if(key.getKeyCode()== KeyEvent.VK_MINUS)
+        }      
+        if(key.getKeyCode()== KeyEvent.VK_SUBTRACT)
         {
-            if(v>=0)
+            if(v>0)
                 v-=0.1;
-        }
-            
+        }            
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD1)
         {
             if(key.isAltDown())
-                incJ1=0.2;
+                incJ1=v;
             else
-                incJ1=-0.2;
-        }
-        
+                incJ1=-v;
+        }        
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD2)
         {
             if(key.isAltDown())
-                incJ2=0.2;
+                incJ2=v;
             else
-                incJ2=-0.2;
-        }
-        
+                incJ2=-v;
+        }        
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD3)
         {
             if(key.isAltDown())
-                incJ3=0.2;
+                incJ3=v;
             else
-                incJ3=-0.2;
-        }
-        
+                incJ3=-v;
+        }        
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD4)
         {
             if(key.isAltDown())
-                incJ4=0.2;
+                incJ4=v;
             else
-                incJ4=-0.2;
-        }
-        
+                incJ4=-v;
+        }        
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD5)
         {
             if(key.isAltDown())
-                incJ5=0.2;
+                incJ5=v;
             else
-                incJ5=-0.2;
-        }
-        
+                incJ5=-v;
+        }        
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD6)
         {
             if(key.isAltDown())
-                incJ6=0.2;
+                incJ6=v;
             else
-                incJ6=-0.2;
-        }
-        
-      
+                incJ6=-v;
+        }        
+        if(key.getKeyCode()== KeyEvent.VK_SPACE)
+            gravar=true;        
+        if(key.getKeyCode()== KeyEvent.VK_ENTER)
+            executar=true;      
         
     }
     
+    @Override
     public void keyReleased(KeyEvent key) {
      
-        if(key.getKeyCode()== KeyEvent.VK_PLUS)
+        if(key.getKeyCode()== KeyEvent.VK_ADD)
             v+=0;
-        if(key.getKeyCode()== KeyEvent.VK_MINUS)
-            v+=0.1;
-        
+        if(key.getKeyCode()== KeyEvent.VK_SUBTRACT)
+            v+=0;        
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD1)
             incJ1=0;
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD2)
@@ -304,6 +310,10 @@ public class projeto implements GLEventListener, KeyListener {
             incJ5=0;
         if(key.getKeyCode()== KeyEvent.VK_NUMPAD6)
             incJ6=0;
+        if(key.getKeyCode()== KeyEvent.VK_SPACE)
+            gravar=false;
+        //if(key.getKeyCode()== KeyEvent.VK_ENTER)
+          //  executar=false;
     }
     @Override
     public void dispose(GLAutoDrawable glad) {
@@ -321,9 +331,6 @@ public class projeto implements GLEventListener, KeyListener {
         //J1
         gl.glRotated(J1, 0, 1, 0);
         gl.glPushMatrix();
-            
-            
-            
             gl.glRotated(90, 1, 0, 0);
             glut.glutSolidCylinder(1.2, 2, 10, 10);
             gl.glTranslated(-0.3, 0, 0);
@@ -338,7 +345,6 @@ public class projeto implements GLEventListener, KeyListener {
         gl.glRotated(J2, 1, 0, 0);
         
         //braco
-        
         //J2
         gl.glPushMatrix();
             gl.glPushMatrix();
@@ -473,5 +479,228 @@ public class projeto implements GLEventListener, KeyListener {
             gl.glPopMatrix();
             
         gl.glPopMatrix();
+    }
+    
+    public void movimentacao ()
+    {
+        if(j1 >= -90 && j1<=90)
+            j1+=incJ1;
+        if(j1>90)
+            j1=90;
+        if(j1<-90)
+            j1=-90;
+        
+        if(j2 >= -90 && j2<=90)
+            j2+=incJ2;
+        if(j2>90)
+            j2=90;
+        if(j2<-90)
+            j2=-90;
+        
+        if(j3 >= -90 && j3<=90)
+            j3+=incJ3;
+        if(j3>90)
+            j3=90;
+        if(j3<-90)
+            j3=-90;
+        
+        if(j4 >= -90 && j4<=90)
+            j4+=incJ4;
+        if(j4>90)
+            j4=90;
+        if(j4<-90)
+            j4=-90;
+        
+        if(j5 >= -90 && j5<=90)
+            j5+=incJ5;
+        if(j5>90)
+            j5=90;
+        if(j5<-90)
+            j5=-90;
+        
+        if(j6 >= -90 && j6<=90)
+            j6+=incJ6;
+        if(j6>90)
+            j6=90;
+        if(j6<-90)
+            j6=-90;
+    }
+    
+    void gravarPosicao(double j1, double j2, double j3, double j4, double j5, double j6, double v, int n)
+    {
+        double p[]={j1,j2,j3,j4,j5,j6,v};
+        for (int i=0;i<7;i++)
+        {
+            position[n][i]=p[i];
+        }
+        System.out.print("Ponto "+(n+1)+" gravado com sucesso: ");
+    }
+    
+    void executarMovimento ()
+    {
+        System.out.println("Executando movimento: ");
+            if(n>0)
+            {
+                double p[]= new double [7];
+                if (a<n)
+                {
+                    System.out.print("Posicao "+(a+1));
+                    for(int j=0;j<7;j++)
+                    {
+                        p[j]=position[a][j];
+                        System.out.print(" J"+(j+1));
+                    }
+                    System.out.println(" copiadas com sucesso ! ");
+                    
+                    if(j1 == p[0])
+                    {
+                        menor1=false;
+                        maior1=false;
+                    }
+                    if(j2 == p[1])
+                    {
+                        menor2=false;
+                        maior2=false;
+                    }
+                    if(j3 == p[2])
+                    {
+                        menor3=false;
+                        maior3=false;
+                    }
+                    if(j4 == p[3])
+                    {
+                        menor4=false;
+                        maior4=false;
+                    }
+                    if(j5 == p[4])
+                    {
+                        menor5=false;
+                        maior5=false;
+                    }
+                    if(j6 == p[5])
+                    {
+                        menor6=false;
+                        maior6=false;
+                    }
+                    
+                    if(j1!=p[0] || j2!=p[1] || j3!=p[2] || j4!=p[3] || j5!=p[4] || j6!=p[5])
+                    {
+                        System.out.println(" movimentando");
+
+                        if(j1<p[0])
+                        {
+                            j1+=p[6];
+                            System.out.println("J1="+j1);
+                            menor1=true;
+                        }
+                        else if(j1>p[0])
+                        {
+                            j1-=p[6];
+                            System.out.println("J1="+j1);
+                            maior1=true;
+                        }                        
+                        if (menor1&&maior1)
+                        {
+                            j1=p[0];
+                            menor1=false;
+                            maior1=false;
+                        }
+                        
+                        if(j2<p[1])
+                        {
+                            j2+=p[6];
+                            menor2=true;
+                        }
+                        else if(j2>p[1])
+                        {
+                            j2-=p[6];
+                            maior2=true;
+                        }
+                        if (menor2&&maior2)
+                        {
+                            j2=p[1];
+                            menor2=false;
+                            maior2=false;
+                        }
+                        
+                        if(j3<p[2])
+                        {
+                            j3+=p[6];
+                            menor3=true;
+                        }
+                        else if(j3>p[2])
+                        {
+                            j3-=p[6];
+                            maior3=true;
+                        }
+                        if (menor3&&maior3)
+                        {
+                            j3=p[2];
+                            menor3=false;
+                            maior3=false;
+                        }
+
+                        if(j4<p[3])
+                        {
+                            j4+=p[6];
+                            menor4=true;
+                        }
+                        else if(j4>p[3])
+                        {
+                            j4-=p[6];
+                            maior4=true;
+                        }
+                        if (menor4&&maior4)
+                        {
+                            j4=p[3];
+                            menor4=false;
+                            maior4=false;
+                        }
+
+                        if(j5<p[4])
+                        {
+                            j5+=p[6];
+                            menor5=true;
+                        }
+                        else if(j5>p[4])
+                        {
+                            j5-=p[6];
+                            maior5=true;
+                        }
+                        if (menor5&&maior5)
+                        {
+                            j5=p[4];
+                            menor5=false;
+                            maior5=false;
+                        }
+
+                        if(j6<p[5])
+                        {
+                            j6+=p[6];
+                            menor6=true;
+                        }
+                        else if(j6>p[5])
+                        {
+                            j6-=p[6];
+                            maior6=true;
+                        }
+                        if (menor6&&maior6)
+                        {
+                            j6=p[5];
+                            menor6=false;
+                            maior6=false;
+                        }
+                    }
+                    else
+                    {
+                        a++;
+                    }
+                }
+                else
+                {
+                    a=0;
+                    executar=false;
+                }
+            }
     }
 }

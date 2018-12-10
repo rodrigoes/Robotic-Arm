@@ -3,11 +3,7 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-<<<<<<< HEAD
             <name>RoboticArm</name>
-=======
-            <name>Projeto_Braco_Robotico</name>
->>>>>>> 8b86c739ef3e5e4a03ae66e7ebbd4a10ed7b41b0
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <source-roots>
                 <root id="src.dir"/>
